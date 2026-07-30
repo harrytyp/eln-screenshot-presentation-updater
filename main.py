@@ -31,9 +31,9 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from pptx_analyzer import extract_images, map_screenshots, generate_report, load_env
+from pptx_analyzer import extract_images, map_screenshots, generate_report
 from eln_capturer import ELNCapturer
-from pptx_updater import replace_screenshot_images, resize_screenshots
+from pptx_updater import replace_screenshot_images, resize_and_crop_screenshots
 
 
 def cmd_analyze(args):
@@ -150,11 +150,11 @@ def cmd_update(args):
     print(f"Found {len(captured)} captured screenshots")
     print()
 
-    # Optionally resize screenshots to match original dimensions
+    # Resize + crop screenshots to match original dimensions
     if args.resize:
         print("Resizing screenshots to match original dimensions...")
         reference_dir = args.extract or "extracted_images"
-        captured = resize_screenshots(captured, reference_dir, args.resize_dir)
+        captured = resize_and_crop_screenshots(captured, reference_dir, args.mapping, args.resize_dir)
 
     # Replace images in PPTX
     output_path = args.output or pptx_path.replace(".pptx", "_updated.pptx")
@@ -226,11 +226,12 @@ def cmd_run(args):
         print("ERROR: No screenshots captured.")
         sys.exit(1)
 
-    # Step 4: Resize
+    # Resize + crop screenshots to match original dimensions
     print("=" * 60)
-    print("STEP 3/4: Resize screenshots")
+    print("STEP 3/4: Resize + crop screenshots")
     print("=" * 60)
-    captured = resize_screenshots(captured, args.extract, args.resize_dir)
+    captured = resize_and_crop_screenshots(
+        captured, args.extract, args.mapping, args.resize_dir)
 
     # Step 5: Update PPTX
     print("=" * 60)

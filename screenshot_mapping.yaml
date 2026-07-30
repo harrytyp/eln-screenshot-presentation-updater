@@ -1,22 +1,32 @@
 # Mapping of PPTX images to ELN pages for screenshot capture
-# Each entry maps an image (identified by slide number + shape name) to:
-#   - url: the ELN page URL to navigate to
-#   - description: what the screenshot should capture
-#   - wait_for: CSS selector or text to wait for before shooting
-#   - crop: optional [x, y, w, h] crop region in px (null = full page)
-#   - actions: optional list of actions to perform before screenshot
 #
-# Images NOT listed here are icons/logos/diagrams that should be left unchanged.
+# Fields:
+#   slide / shape — identify the image in the PPTX
+#   url — page to navigate to
+#   description — human-readable purpose
+#   wait_for — text to wait for before capturing
+#   expected_keywords — page validation (Issue #2): rejects if none found
+#   viewport — [width, height] — custom viewport size (Issue #1)
+#   crop — [x, y, w, h] — crop region on the captured screenshot (Issue #1)
+#   actions — interaction sequence before capture (Issue #3):
+#     click: click element matching label text
+#     type: type into element matching label
+#     wait: wait N seconds
+#     scroll: scroll the page
+#
+# Images NOT listed here are icons/logos/diagrams left unchanged.
 
 screenshots:
 
-  # === UI Overview (Slides 10-14) ===
+  # === UI Overview (Slides 10-14): top-level pages ===
 
   - slide: 10
     shape: "Grafik 19"
     url: "dashboard.php"
-    description: "Dashboard - main overview after login"
+    description: "Dashboard — main overview after login"
     wait_for: "Dashboard"
+    expected_keywords: ["Kolja", "Dashboard", "Experiments"]
+    viewport: [1920, 1080]
     note: "The dashboard is the default page after login"
 
   - slide: 11
@@ -24,174 +34,213 @@ screenshots:
     url: "experiments.php"
     description: "Experiments list view"
     wait_for: "Experiments"
+    expected_keywords: ["Experiments", "Create"]
 
   - slide: 12
     shape: "Grafik 14"
     url: "resources.php"
     description: "Resources list view"
     wait_for: "Resources"
+    expected_keywords: ["Resources", "Create"]
 
   - slide: 13
     shape: "Grafik 12"
     url: "scheduler.php"
     description: "Scheduler/calendar view"
     wait_for: "Scheduler"
+    expected_keywords: ["Scheduler"]
 
   - slide: 14
     shape: "Grafik 9"
     url: "team.php"
     description: "Team admin panel"
     wait_for: "Team"
+    expected_keywords: ["Team"]
 
   # === Search & Filtering (Slide 20) ===
 
   - slide: 20
     shape: "Grafik 8"
     url: "experiments.php"
-    description: "Search & Filtering - top part (search bar + filters)"
-    wait_for: "Experiments"
+    description: "Search & Filtering — top part"
+    wait_for: "Search"
+    expected_keywords: ["Search", "Experiments"]
     actions:
-      - action: "type"
-        selector: "input[type=search]"
-        text: ""
       - action: "click"
-        selector: "button[title='Search']"
+        selector: "Search"
+      - action: "wait"
+        seconds: 1
 
   - slide: 20
     shape: "Grafik 2"
     url: "experiments.php"
-    description: "Search & Filtering - bottom part (results)"
+    description: "Search & Filtering — bottom results"
     wait_for: "Experiments"
-    actions:
-      - action: "click"
-        selector: "button[title='Search']"
 
-  # === Organization (Slides 23-24) ===
+  # === Organization (Slides 23-24): category / status ===
 
   - slide: 23
     shape: "Grafik 11"
     url: "experiments.php?mode=add"
-    description: "Organization - category selection in create entry"
-    wait_for: "Create"
+    description: "Organization — category selection"
+    wait_for: "Category"
+    expected_keywords: ["Category"]
+    viewport: [1920, 1080]
 
   - slide: 23
     shape: "Grafik 13"
     url: "experiments.php?mode=add"
-    description: "Organization - status level selection"
-    wait_for: "Category"
+    description: "Organization — status level"
+    wait_for: "Status"
+    expected_keywords: ["Status"]
 
   - slide: 24
     shape: "Grafik 3"
     url: "experiments.php"
-    description: "Entry view - title bar with ID, category, status"
-    wait_for: "experiments"
+    description: "Entry view — title bar with ID/category/status"
+    wait_for: "Drylab"
 
-  # === Text Editor (Slide 25) ===
+  # === Text Editor (Slide 25) — open entry with editor ===
 
   - slide: 25
     shape: "Grafik 8"
-    url: "experiments.php"
-    description: "Text editor / entry edit view with WYSIWYG"
-    wait_for: "body"
+    url: "experiments.php?mode=view&id=2"
+    description: "Text editor / entry view with WYSIWYG"
+    wait_for: "Tree diameter"
+    expected_keywords: ["diameter"]
+    viewport: [1920, 1080]
+    actions:
+      - action: "wait"
+        seconds: 2
 
   # === Extra Fields (Slide 26) ===
 
   - slide: 26
     shape: "Grafik 17"
-    url: "experiments.php"
-    description: "Extra fields section in an entry"
+    url: "experiments.php?mode=view&id=2"
+    description: "Extra fields in entry"
     wait_for: "Extra fields"
+    actions:
+      - action: "click"
+        selector: "Extra fields"
+      - action: "wait"
+        seconds: 1
 
   - slide: 26
     shape: "Grafik 35"
-    url: "experiments.php"
-    description: "Extra fields - JSON editor view"
+    url: "experiments.php?mode=view&id=2"
+    description: "Extra fields — JSON editor"
     wait_for: "Extra fields"
 
   # === Steps (Slide 28) ===
 
   - slide: 28
     shape: "Grafik 3"
-    url: "experiments.php"
-    description: "Steps/todo section in an entry"
+    url: "experiments.php?mode=view&id=2378"
+    description: "Steps/todo section in entry"
     wait_for: "Steps"
+    expected_keywords: ["Steps", "Wood"]
+    actions:
+      - action: "click"
+        selector: "Steps"
+      - action: "wait"
+        seconds: 1
 
   # === Spreadsheet (Slide 29) ===
 
   - slide: 29
     shape: "Grafik 11"
     url: "experiments.php"
-    description: "Spreadsheet editor in an entry"
+    description: "Spreadsheet editor"
     wait_for: "Spreadsheet"
 
   - slide: 29
     shape: "Grafik 8"
     url: "experiments.php"
-    description: "Spreadsheet editor - data table"
+    description: "Spreadsheet editor — data table"
     wait_for: "table"
 
   # === File Upload (Slide 30) ===
 
   - slide: 30
     shape: "Grafik 22"
-    url: "experiments.php"
+    url: "experiments.php?mode=view&id=2"
     description: "File upload section"
     wait_for: "Attach"
+    actions:
+      - action: "click"
+        selector: "Attach"
+      - action: "wait"
+        seconds: 1
 
   - slide: 30
     shape: "Grafik 27"
-    url: "experiments.php"
-    description: "File upload - attached files list"
+    url: "experiments.php?mode=view&id=2"
+    description: "File upload — attached files list"
     wait_for: "Attach"
 
   - slide: 30
     shape: "Grafik 6"
     url: "experiments.php"
-    description: "File upload - storage/quota info"
+    description: "File upload — storage/quota info"
     wait_for: "Storage"
 
   # === Links (Slide 31) ===
 
   - slide: 31
     shape: "Grafik 3"
-    url: "experiments.php"
+    url: "experiments.php?mode=view&id=2378"
     description: "Bidirectional links section"
     wait_for: "Links"
+    expected_keywords: ["Links"]
+    actions:
+      - action: "click"
+        selector: "Links"
+      - action: "wait"
+        seconds: 1
 
   # === Permissions (Slide 32) ===
 
   - slide: 32
     shape: "Grafik 10"
-    url: "experiments.php"
-    description: "Permissions configuration panel"
+    url: "experiments.php?mode=view&id=2378"
+    description: "Permissions configuration"
     wait_for: "Permissions"
+    expected_keywords: ["Permissions"]
+    actions:
+      - action: "click"
+        selector: "Permissions"
+      - action: "wait"
+        seconds: 1
 
   # === Booking/Scheduler (Slide 33) ===
 
   - slide: 33
     shape: "Grafik 10"
     url: "resources.php"
-    description: "Booking - resource entry with booking options"
-    wait_for: "Resources"
+    description: "Booking — resource entry"
+    wait_for: "bookable"
+    expected_keywords: ["Resources"]
 
   - slide: 33
     shape: "Grafik 7"
     url: "scheduler.php"
-    description: "Booking - scheduler calendar view"
+    description: "Booking — scheduler view"
     wait_for: "Scheduler"
+    expected_keywords: ["Scheduler"]
 
   # === Preservation (Slide 34) ===
 
   - slide: 34
     shape: "Grafik 16"
-    url: "experiments.php"
-    description: "Preservation - signature/timestamp bar"
+    url: "experiments.php?mode=view&id=2378"
+    description: "Preservation — signature/timestamp bar"
     wait_for: "Signature"
 
   - slide: 34
     shape: "Grafik 27"
-    url: "experiments.php"
-    description: "Preservation - signature key settings"
+    url: "experiments.php?mode=view&id=2378"
+    description: "Preservation — signature key settings"
     wait_for: "Signature"
 
   # === Templates (Slide 35) ===
@@ -201,3 +250,4 @@ screenshots:
     url: "templates.php"
     description: "Templates list view"
     wait_for: "Templates"
+    expected_keywords: ["Templates"]
