@@ -1,0 +1,203 @@
+# Mapping of PPTX images to ELN pages for screenshot capture
+# Each entry maps an image (identified by slide number + shape name) to:
+#   - url: the ELN page URL to navigate to
+#   - description: what the screenshot should capture
+#   - wait_for: CSS selector or text to wait for before shooting
+#   - crop: optional [x, y, w, h] crop region in px (null = full page)
+#   - actions: optional list of actions to perform before screenshot
+#
+# Images NOT listed here are icons/logos/diagrams that should be left unchanged.
+
+screenshots:
+
+  # === UI Overview (Slides 10-14) ===
+
+  - slide: 10
+    shape: "Grafik 19"
+    url: "dashboard.php"
+    description: "Dashboard - main overview after login"
+    wait_for: "Dashboard"
+    note: "The dashboard is the default page after login"
+
+  - slide: 11
+    shape: "Grafik 18"
+    url: "experiments.php"
+    description: "Experiments list view"
+    wait_for: "Experiments"
+
+  - slide: 12
+    shape: "Grafik 14"
+    url: "resources.php"
+    description: "Resources list view"
+    wait_for: "Resources"
+
+  - slide: 13
+    shape: "Grafik 12"
+    url: "scheduler.php"
+    description: "Scheduler/calendar view"
+    wait_for: "Scheduler"
+
+  - slide: 14
+    shape: "Grafik 9"
+    url: "team.php"
+    description: "Team admin panel"
+    wait_for: "Team"
+
+  # === Search & Filtering (Slide 20) ===
+
+  - slide: 20
+    shape: "Grafik 8"
+    url: "experiments.php"
+    description: "Search & Filtering - top part (search bar + filters)"
+    wait_for: "Experiments"
+    actions:
+      - action: "type"
+        selector: "input[type=search]"
+        text: ""
+      - action: "click"
+        selector: "button[title='Search']"
+
+  - slide: 20
+    shape: "Grafik 2"
+    url: "experiments.php"
+    description: "Search & Filtering - bottom part (results)"
+    wait_for: "Experiments"
+    actions:
+      - action: "click"
+        selector: "button[title='Search']"
+
+  # === Organization (Slides 23-24) ===
+
+  - slide: 23
+    shape: "Grafik 11"
+    url: "experiments.php?mode=add"
+    description: "Organization - category selection in create entry"
+    wait_for: "Create"
+
+  - slide: 23
+    shape: "Grafik 13"
+    url: "experiments.php?mode=add"
+    description: "Organization - status level selection"
+    wait_for: "Category"
+
+  - slide: 24
+    shape: "Grafik 3"
+    url: "experiments.php"
+    description: "Entry view - title bar with ID, category, status"
+    wait_for: "experiments"
+
+  # === Text Editor (Slide 25) ===
+
+  - slide: 25
+    shape: "Grafik 8"
+    url: "experiments.php"
+    description: "Text editor / entry edit view with WYSIWYG"
+    wait_for: "body"
+
+  # === Extra Fields (Slide 26) ===
+
+  - slide: 26
+    shape: "Grafik 17"
+    url: "experiments.php"
+    description: "Extra fields section in an entry"
+    wait_for: "Extra fields"
+
+  - slide: 26
+    shape: "Grafik 35"
+    url: "experiments.php"
+    description: "Extra fields - JSON editor view"
+    wait_for: "Extra fields"
+
+  # === Steps (Slide 28) ===
+
+  - slide: 28
+    shape: "Grafik 3"
+    url: "experiments.php"
+    description: "Steps/todo section in an entry"
+    wait_for: "Steps"
+
+  # === Spreadsheet (Slide 29) ===
+
+  - slide: 29
+    shape: "Grafik 11"
+    url: "experiments.php"
+    description: "Spreadsheet editor in an entry"
+    wait_for: "Spreadsheet"
+
+  - slide: 29
+    shape: "Grafik 8"
+    url: "experiments.php"
+    description: "Spreadsheet editor - data table"
+    wait_for: "table"
+
+  # === File Upload (Slide 30) ===
+
+  - slide: 30
+    shape: "Grafik 22"
+    url: "experiments.php"
+    description: "File upload section"
+    wait_for: "Attach"
+
+  - slide: 30
+    shape: "Grafik 27"
+    url: "experiments.php"
+    description: "File upload - attached files list"
+    wait_for: "Attach"
+
+  - slide: 30
+    shape: "Grafik 6"
+    url: "experiments.php"
+    description: "File upload - storage/quota info"
+    wait_for: "Storage"
+
+  # === Links (Slide 31) ===
+
+  - slide: 31
+    shape: "Grafik 3"
+    url: "experiments.php"
+    description: "Bidirectional links section"
+    wait_for: "Links"
+
+  # === Permissions (Slide 32) ===
+
+  - slide: 32
+    shape: "Grafik 10"
+    url: "experiments.php"
+    description: "Permissions configuration panel"
+    wait_for: "Permissions"
+
+  # === Booking/Scheduler (Slide 33) ===
+
+  - slide: 33
+    shape: "Grafik 10"
+    url: "resources.php"
+    description: "Booking - resource entry with booking options"
+    wait_for: "Resources"
+
+  - slide: 33
+    shape: "Grafik 7"
+    url: "scheduler.php"
+    description: "Booking - scheduler calendar view"
+    wait_for: "Scheduler"
+
+  # === Preservation (Slide 34) ===
+
+  - slide: 34
+    shape: "Grafik 16"
+    url: "experiments.php"
+    description: "Preservation - signature/timestamp bar"
+    wait_for: "Signature"
+
+  - slide: 34
+    shape: "Grafik 27"
+    url: "experiments.php"
+    description: "Preservation - signature key settings"
+    wait_for: "Signature"
+
+  # === Templates (Slide 35) ===
+
+  - slide: 35
+    shape: "Grafik 5"
+    url: "templates.php"
+    description: "Templates list view"
+    wait_for: "Templates"

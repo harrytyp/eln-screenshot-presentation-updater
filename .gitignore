@@ -1,0 +1,12 @@
+*.egg-info/
+*.pyc
+.env
+/extracted_images/
+/screenshots/
+/screenshots_resized/
+__pycache__/
+build/
+dist/
+extracted_images/
+screenshots/
+screenshots_resized/
