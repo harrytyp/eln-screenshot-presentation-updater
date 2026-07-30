@@ -38,7 +38,7 @@ screenshots:
 
   - slide: 12
     shape: "Grafik 14"
-    url: "resources.php"
+    url: "database.php"
     description: "Resources list view"
     wait_for: "Resources"
     expected_keywords: ["Resources", "Create"]
@@ -217,7 +217,7 @@ screenshots:
 
   - slide: 33
     shape: "Grafik 10"
-    url: "resources.php"
+    url: "database.php"
     description: "Booking — resource entry"
     wait_for: "bookable"
     expected_keywords: ["Resources"]
