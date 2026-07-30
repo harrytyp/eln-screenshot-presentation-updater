@@ -89,56 +89,40 @@ def replace_screenshot_images(
 def _replace_shape_image(slide, shape_name: str, new_image_path: str) -> bool:
     """
     Find a picture shape by name in the slide and replace its image blob.
+    Uses rel.target_part.blob to persist the replacement through save.
     Returns True on success.
     """
+    NS_A = "http://schemas.openxmlformats.org/drawingml/2006/main"
+    NS_R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+
     for shape in slide.shapes:
         if shape.shape_type != MSO_SHAPE_TYPE.PICTURE:
             continue
         if shape.name != shape_name:
             continue
 
-        # Read the new image
+        # Read new image
         with open(new_image_path, "rb") as f:
             new_blob = f.read()
 
-        # Determine image format from content
-        ext = Path(new_image_path).suffix.lower()
-        content_type_map = {
-            ".png": "image/png",
-            ".jpg": "image/jpeg",
-            ".jpeg": "image/jpeg",
-            ".gif": "image/gif",
-        }
-        content_type = content_type_map.get(ext, "image/png")
+        if not new_blob:
+            print(f"  WARNING: Empty blob for {new_image_path}")
+            return False
 
-        # The python-pptx approach: use the image property
-        # python-pptx doesn't have a direct "set image" method,
-        # so we work at the XML level via the relationship
-        try:
-            # Get the image part (rId)
-            image_part = shape.image
-            # We need to replace the blob in the part
-            # Access via the part's blob property
-            rId = shape._element.xpath(".//a:blip/@r:embed",
-                namespaces={
-                    "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
-                    "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-                })
-            if rId:
-                rel_id = rId[0]
-                # Get the image part from the slide's relationships
-                rel = slide.part.rels[rel_id]
-                # Replace the blob
-                rel.target_part._blob = new_blob
-                return True
-        except Exception as e:
-            # Fallback: try using the blob directly
-            try:
-                shape.image._blob = new_blob
-                return True
-            except Exception as e2:
-                print(f"  Warning: could not replace image: {e2}")
-                return False
+        # Find the blip element and its rId
+        blip = shape._element.find(f".//{{{NS_A}}}blip")
+        if blip is None:
+            return False
+
+        rId = blip.get(f"{{{NS_R}}}embed")
+        if not rId:
+            return False
+
+        # Replace the blob on the image part via the relationship
+        rel = slide.part.rels[rId]
+        rel.target_part.blob = new_blob
+
+        return True
 
     return False
 

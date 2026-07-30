@@ -65,27 +65,15 @@ def cmd_analyze(args):
 
 def cmd_capture(args):
     """Capture new screenshots from the ELN test instance."""
-    # Load credentials
-    env_vars = load_env(args.env) if args.env else {}
-
-    email = env_vars.get("ELNTEST_EMAIL") or os.environ.get("ELNTEST_EMAIL") or ""
-    password = env_vars.get("ELNTEST_PASSWORD") or os.environ.get("ELNTEST_PASSWORD") or ""
-    base_url = env_vars.get("ELNTEST_URL") or os.environ.get("ELNTEST_URL") or "https://elntest.ub.tum.de"
-
-    if not email or not password:
-        print("ERROR: ELNTEST_EMAIL and ELNTEST_PASSWORD must be set.")
-        print("       Create a .env file (see .env.template) or set environment variables.")
-        sys.exit(1)
+    base_url = "https://elntest.ub.tum.de"
 
     # First analyze the PPTX
     images = extract_images(args.pptx)
     map_screenshots(images, args.mapping)
 
-    # Initialize capturer
+    # Initialize capturer (no credentials needed — user logs in manually)
     capturer = ELNCapturer(
         base_url=base_url,
-        email=email,
-        password=password,
         output_dir=args.outdir,
     )
 
@@ -216,24 +204,12 @@ def cmd_run(args):
             print(f"  Slide {img.slide_number} '{img.shape_name}' — UNMAPPED")
         print("These will NOT be updated.")
 
-    # Step 2: Load credentials
-    env_vars = load_env(args.env) if args.env else {}
-    email = env_vars.get("ELNTEST_EMAIL") or os.environ.get("ELNTEST_EMAIL") or ""
-    password = env_vars.get("ELNTEST_PASSWORD") or os.environ.get("ELNTEST_PASSWORD") or ""
-    base_url = env_vars.get("ELNTEST_URL") or os.environ.get("ELNTEST_URL") or "https://elntest.ub.tum.de"
-
-    if not email or not password:
-        print("ERROR: ELNTEST_EMAIL and ELNTEST_PASSWORD must be set.")
-        sys.exit(1)
-
-    # Step 3: Capture
+    # Step 2: Capture (no credentials needed — user logs in manually)
     print("=" * 60)
     print("STEP 2/4: Capture screenshots from ELN")
     print("=" * 60)
     capturer = ELNCapturer(
-        base_url=base_url,
-        email=email,
-        password=password,
+        base_url="https://elntest.ub.tum.de",
         output_dir=args.capture_dir,
     )
 
